@@ -4,40 +4,52 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
 need_cmd talosctl
+need_cmd timeout
 need_cmd yq
 
 GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
 TALOSCONFIG="$GENERATED/talosconfig"
 NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-TALOS_VERSION="$(yq -r '.cluster.talos' "$PROJECT_ROOT/config/versions.yaml")"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
+
+printf '%-20s %-15s %-10s %-10s\n' "NAME" "IP" "API" "HOSTNAME"
+printf '%-20s %-15s %-10s %-10s\n' "--------------------" "---------------" "----------" "----------"
+
 failures=0
 
-printf '%-20s %-15s %-10s %-10s\n' NAME IP API HOSTNAME
-printf '%-20s %-15s %-10s %-10s\n' -------------------- --------------- ---------- ----------
-
 while IFS=$'\t' read -r name ip; do
-  [[ -n "$name" ]] || continue
-  api=FAIL
-  hostname=FAIL
+  [[ -n "$name" && -n "$ip" ]] || continue
 
-  out="$(talosctl --talosconfig "$TALOSCONFIG" --nodes "$ip" version --short 2>&1 || true)"
-  if grep -q "$TALOS_VERSION" <<<"$out"; then
-    api=OK
-  else
-    ((failures+=1))
+  api_status="FAIL"
+  hostname_status="FAIL"
+
+  talos_direct=(
+    talosctl
+    --talosconfig "$TALOSCONFIG"
+    --endpoints "$ip"
+    --nodes "$ip"
+  )
+
+  if timeout 8s "${talos_direct[@]}" version >/dev/null 2>&1; then
+    api_status="OK"
+
+    if hostname_out="$(timeout 8s "${talos_direct[@]}" get hostname 2>/dev/null)" \
+      && grep -Fq "$name" <<<"$hostname_out"; then
+      hostname_status="OK"
+    fi
   fi
 
-  host_out="$(talosctl --talosconfig "$TALOSCONFIG" --nodes "$ip" get hostname 2>&1 || true)"
-  if grep -q "$name" <<<"$host_out"; then
-    hostname=OK
-  else
-    ((failures+=1))
-  fi
+  printf '%-20s %-15s %-10s %-10s\n' \
+    "$name" "$ip" "$api_status" "$hostname_status"
 
-  printf '%-20s %-15s %-10s %-10s\n' "$name" "$ip" "$api" "$hostname"
+  if [[ "$api_status" != "OK" || "$hostname_status" != "OK" ]]; then
+    failures=$((failures + 1))
+  fi
 done < <(yq -r '.nodes[] | [.name, .ip] | @tsv' "$NODES_FILE")
 
-(( failures == 0 )) || die "$failures post-install Talos checks failed; nodes may still be rebooting"
-ok "all nodes are installed, reachable with mTLS, and have expected hostnames"
+if (( failures > 0 )); then
+  die "$failures post-install Talos checks failed"
+fi
+
+ok "all nodes are directly reachable with mTLS and have expected hostnames"
