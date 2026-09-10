@@ -1,0 +1,167 @@
+version: '3'
+
+dotenv:
+  - config/lab.local.env
+  - config/lab.env
+
+silent: true
+
+tasks:
+  default:
+    desc: List available lab tasks
+    cmds:
+      - go-task --list
+
+  bootstrap:
+    desc: Install host dependencies, then validate the virtualization host
+    cmds:
+      - ./scripts/00-install-host-deps.sh
+      - task: host:check
+
+  host:install:
+    desc: Install CachyOS/Arch QEMU/KVM/libvirt dependencies
+    platforms: [linux/amd64]
+    cmds:
+      - ./scripts/00-install-host-deps.sh
+
+  host:check:
+    desc: Verify CPU virtualization, KVM, QEMU, libvirt and lab tooling
+    platforms: [linux/amd64]
+    cmds:
+      - ./scripts/01-host-check.sh
+
+  cluster:old:discover:
+    desc: Inspect a previous talosctl-managed QEMU cluster without changing it
+    cmds:
+      - ./scripts/02-old-cluster-discover.sh
+
+  cluster:old:destroy:
+    desc: Destroy only the configured previous talosctl-managed QEMU cluster
+    preconditions:
+      - sh: test -n "${OLD_CLUSTER_NAME:-}"
+        msg: OLD_CLUSTER_NAME must be set in config/lab.env
+    cmds:
+      - ./scripts/03-destroy-old-qemu-cluster.sh
+
+  proxy:check:host:
+    desc: Verify the HTTP CONNECT proxy via host loopback
+    cmds:
+      - ./scripts/04-proxy-check-host.sh
+
+  proxy:check:lab:
+    desc: Verify the proxy is reachable on the libvirt gateway address
+    cmds:
+      - ./scripts/08-proxy-check-lab.sh
+
+  network:render:
+    desc: Render the libvirt network XML from config/lab.env
+    cmds:
+      - ./scripts/05-network-render.sh
+
+  network:up:
+    desc: Define, autostart and start the deterministic libvirt NAT network
+    cmds:
+      - task: host:check
+      - task: network:render
+      - ./scripts/06-network-up.sh
+
+  network:status:
+    desc: Show libvirt network state, bridge and DHCP leases
+    cmds:
+      - ./scripts/07-network-status.sh
+
+  network:destroy:
+    desc: Stop and undefine only the Talos lab network
+    cmds:
+      - ./scripts/09-network-destroy.sh
+
+  network:recreate:
+    desc: Recreate the lab network from its rendered definition
+    cmds:
+      - task: network:destroy
+      - task: network:render
+      - task: network:up
+
+  storage:render:
+    desc: Render the dedicated libvirt storage-pool definition
+    cmds:
+      - ./scripts/10-storage-render.sh
+
+  storage:up:
+    desc: Define and start the dedicated libvirt storage pool
+    cmds:
+      - task: storage:render
+      - ./scripts/11-storage-up.sh
+
+  storage:status:
+    desc: Show pool information and volumes
+    cmds:
+      - virsh -c "$LIBVIRT_URI" pool-info "$LIBVIRT_POOL"
+      - virsh -c "$LIBVIRT_URI" vol-list "$LIBVIRT_POOL"
+
+  storage:destroy:
+    desc: Undefine the dedicated lab storage pool after VMs are gone
+    cmds:
+      - ./scripts/16-storage-destroy.sh
+
+  image:download:
+    desc: Download pinned Talos ISO through proxy and verify official SHA-256
+    cmds:
+      - task: proxy:check:host
+      - task: storage:up
+      - ./scripts/12-talos-image-download.sh
+
+  image:status:
+    desc: Show pinned Talos ISO cache, checksum and libvirt-pool status
+    cmds:
+      - ./scripts/17-image-status.sh
+
+  vm:plan:
+    desc: Print and validate the desired six-VM topology without creating domains
+    cmds:
+      - ./scripts/18-vm-plan.sh
+
+  vm:create:
+    desc: Create all six Talos VMs from config/nodes.yaml
+    cmds:
+      - task: network:up
+      - task: proxy:check:lab
+      - task: image:download
+      - task: vm:plan
+      - ./scripts/13-vms-create.sh
+      - task: vm:status
+
+  vm:status:
+    desc: Show desired nodes, VM states and DHCP leases
+    cmds:
+      - ./scripts/14-vms-status.sh
+
+  vm:destroy:
+    desc: Destroy only VMs and disks declared in config/nodes.yaml
+    cmds:
+      - ./scripts/15-vms-destroy.sh
+
+  infra:up:
+    desc: Bring up network, storage, pinned Talos image and all six VMs
+    cmds:
+      - task: vm:create
+
+  infra:status:
+    desc: Show network, storage and VM state
+    cmds:
+      - task: network:status
+      - task: storage:status
+      - task: vm:status
+
+  infra:destroy:
+    desc: Destroy VMs, storage pool and network; preserve downloaded cache
+    cmds:
+      - task: vm:destroy
+      - task: storage:destroy
+      - task: network:destroy
+
+  preflight:
+    desc: Run non-destructive host/proxy checks before provisioning
+    cmds:
+      - task: host:check
+      - task: proxy:check:host

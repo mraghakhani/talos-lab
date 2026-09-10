@@ -1,0 +1,54 @@
+nodes:
+  - name: talos-cp-01
+    role: controlplane
+    ip: 192.168.231.11
+    mac: "52:54:00:23:10:11"
+    vcpus: 2
+    memory_mib: 2560
+    os_disk_gib: 20
+    data_disk_gib: 0
+
+  - name: talos-cp-02
+    role: controlplane
+    ip: 192.168.231.12
+    mac: "52:54:00:23:10:12"
+    vcpus: 2
+    memory_mib: 2560
+    os_disk_gib: 20
+    data_disk_gib: 0
+
+  - name: talos-cp-03
+    role: controlplane
+    ip: 192.168.231.13
+    mac: "52:54:00:23:10:13"
+    vcpus: 2
+    memory_mib: 2560
+    os_disk_gib: 20
+    data_disk_gib: 0
+
+  - name: talos-worker-01
+    role: worker
+    ip: 192.168.231.21
+    mac: "52:54:00:23:10:21"
+    vcpus: 4
+    memory_mib: 4608
+    os_disk_gib: 20
+    data_disk_gib: 30
+
+  - name: talos-worker-02
+    role: worker
+    ip: 192.168.231.22
+    mac: "52:54:00:23:10:22"
+    vcpus: 4
+    memory_mib: 4608
+    os_disk_gib: 20
+    data_disk_gib: 30
+
+  - name: talos-worker-03
+    role: worker
+    ip: 192.168.231.23
+    mac: "52:54:00:23:10:23"
+    vcpus: 4
+    memory_mib: 4608
+    os_disk_gib: 20
+    data_disk_gib: 30

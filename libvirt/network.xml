@@ -1,0 +1,17 @@
+<network>
+  <name>talos-lab</name>
+  <forward mode='nat'/>
+  <bridge name='virbr231' stp='on' delay='0'/>
+  <domain name='talos-lab' localOnly='yes'/>
+  <ip address='192.168.231.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.231.100' end='192.168.231.180'/>
+      <host mac='52:54:00:23:10:11' name='talos-cp-01' ip='192.168.231.11'/>
+      <host mac='52:54:00:23:10:12' name='talos-cp-02' ip='192.168.231.12'/>
+      <host mac='52:54:00:23:10:13' name='talos-cp-03' ip='192.168.231.13'/>
+      <host mac='52:54:00:23:10:21' name='talos-worker-01' ip='192.168.231.21'/>
+      <host mac='52:54:00:23:10:22' name='talos-worker-02' ip='192.168.231.22'/>
+      <host mac='52:54:00:23:10:23' name='talos-worker-03' ip='192.168.231.23'/>
+    </dhcp>
+  </ip>
+</network>
