@@ -1,0 +1,9 @@
+# Local overrides / machine-local settings
+config/lab.local.env
+
+# Generated state and downloaded artifacts
+state/*
+!state/.gitkeep
+
+# Talos generated secrets/configs are added in the next milestone and remain local.
+talos/generated/

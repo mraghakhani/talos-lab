@@ -1,0 +1,14 @@
+<network>
+  <name>${LAB_NAME}</name>
+  <forward mode='nat'>
+    <nat/>
+  </forward>
+  <bridge name='${LAB_BRIDGE}' stp='on' delay='0'/>
+  <domain name='${LAB_NAME}' localOnly='yes'/>
+  <ip address='${LAB_GATEWAY}' netmask='${LAB_NETMASK}'>
+    <dhcp>
+      <range start='${DHCP_DYNAMIC_START}' end='${DHCP_DYNAMIC_END}'/>
+${DHCP_HOSTS_XML}
+    </dhcp>
+  </ip>
+</network>
