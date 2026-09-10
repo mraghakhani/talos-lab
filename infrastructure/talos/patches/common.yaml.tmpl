@@ -1,0 +1,23 @@
+# Talos 1.14+ Kubernetes configuration uses dedicated multi-document resources.
+# Keep Kubernetes network/node settings out of the legacy v1alpha1 machine config.
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - ${POD_CIDR}
+serviceSubnets:
+  - ${SERVICE_CIDR}
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - ${LAB_NETWORK}
+---
+# Talos >=1.13: EnvironmentConfig replaces the deprecated machine.env field.
+apiVersion: v1alpha1
+kind: EnvironmentConfig
+variables:
+  http_proxy: "${PROXY_SCHEME}://${PROXY_HOST}:${PROXY_PORT}"
+  https_proxy: "${PROXY_SCHEME}://${PROXY_HOST}:${PROXY_PORT}"
+  no_proxy: "localhost,127.0.0.1,::1,${LAB_NETWORK},${POD_CIDR},${SERVICE_CIDR},169.254.0.0/16,.svc,.cluster.local,.${LAB_DOMAIN}"
