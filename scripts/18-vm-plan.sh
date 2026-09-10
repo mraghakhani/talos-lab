@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# shellcheck source=./scripts/lib.sh
 source "$(dirname "$0")/lib.sh"
 
 need_cmd yq
@@ -37,15 +38,26 @@ printf 'VM proxy:           %s://%s:%s\n' "$PROXY_SCHEME" "$PROXY_HOST" "$PROXY_
 printf 'Talos ISO:          %s\n' "$ISO_PATH"
 
 echo
-virsh -c "$LIBVIRT_URI" net-info "$LAB_NAME" >/dev/null 2>&1 \
-  && echo "OK   network '$LAB_NAME' is defined" \
-  || { echo "MISS network '$LAB_NAME'"; exit 1; }
-virsh -c "$LIBVIRT_URI" pool-info "$LIBVIRT_POOL" >/dev/null 2>&1 \
-  && echo "OK   storage pool '$LIBVIRT_POOL' is defined" \
-  || { echo "MISS storage pool '$LIBVIRT_POOL'"; exit 1; }
-[[ -f "$ISO_PATH" ]] \
-  && echo "OK   verified Talos ISO is staged in the libvirt pool" \
-  || { echo "MISS Talos ISO; run: task image:download"; exit 1; }
+if virsh -c "$LIBVIRT_URI" net-info "$LAB_NAME" >/dev/null 2>&1; then
+  echo "OK   network '$LAB_NAME' is defined"
+else
+  echo "MISS network '$LAB_NAME'"
+  exit 1
+fi
+
+if virsh -c "$LIBVIRT_URI" pool-info "$LIBVIRT_POOL" >/dev/null 2>&1; then
+  echo "OK   storage pool '$LIBVIRT_POOL' is defined"
+else
+  echo "MISS storage pool '$LIBVIRT_POOL'"
+  exit 1
+fi
+
+if [[ -f "$ISO_PATH" ]]; then
+  echo "OK   verified Talos ISO is staged in the libvirt pool"
+else
+  echo "MISS Talos ISO; run: task image:download"
+  exit 1
+fi
 
 existing=0
 while read -r name; do

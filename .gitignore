@@ -1,9 +1,39 @@
-# Local overrides / machine-local settings
+# Machine-local configuration / overrides
 config/lab.local.env
+.env
+.env.*
+!.env.example
 
-# Generated state and downloaded artifacts
-state/*
+# Generated runtime state, downloads, rendered files and caches
+state/**
 !state/.gitkeep
+.cache/
+.tmp/
 
-# Talos generated secrets/configs are added in the next milestone and remain local.
+# Talos/Kubernetes generated credentials and machine configuration
+# Keep declarative patches under infrastructure/talos/patches/, but never generated output.
+infrastructure/talos/generated/
 talos/generated/
+talosconfig*
+kubeconfig*
+*.kubeconfig
+
+# Secret material / PKI private keys
+secrets/
+openbao/data/
+openbao/recovery/
+*.agekey
+*.key
+*.p12
+*.pfx
+
+# SOPS may commit encrypted files (*.sops.yaml), but never the private age identity.
+age-key.txt
+keys.txt
+
+# Editors / OS noise
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*~

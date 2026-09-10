@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# shellcheck source=./scripts/lib.sh
 source "$(dirname "$0")/lib.sh"
 
 need_cmd envsubst
 need_cmd yq
 
-TEMPLATE="$PROJECT_ROOT/libvirt/network.xml.tmpl"
+TEMPLATE="$PROJECT_ROOT/infrastructure/libvirt/network.xml.tmpl"
 NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 OUT_DIR="$PROJECT_ROOT/state/rendered"
 OUT="$OUT_DIR/network.xml"

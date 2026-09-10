@@ -1,0 +1,58 @@
+schema: 2
+
+# Packages available from Arch/CachyOS repositories.
+packages:
+  - go-task
+  - jq
+  - go-yq
+  - kubectl
+  - helm
+  - shellcheck
+  - yamllint
+  - actionlint
+  - gitleaks
+  - sops
+  - age
+  - cilium-cli
+  - argocd
+  - argo-workflows
+  - cosign
+  - kubeconform
+
+# Workstation commands. Some packages expose a different executable name on Arch.
+# In particular, the official go-task package installs /usr/bin/go-task.
+commands:
+  - name: task
+    alternatives: [task, go-task]
+  - name: jq
+    alternatives: [jq]
+  - name: yq
+    alternatives: [yq]
+  - name: kubectl
+    alternatives: [kubectl]
+  - name: helm
+    alternatives: [helm]
+  - name: talosctl
+    alternatives: [talosctl]
+  - name: shellcheck
+    alternatives: [shellcheck]
+  - name: yamllint
+    alternatives: [yamllint]
+  - name: actionlint
+    alternatives: [actionlint]
+  - name: gitleaks
+    alternatives: [gitleaks]
+  - name: sops
+    alternatives: [sops]
+  - name: age
+    alternatives: [age]
+  - name: cilium
+    alternatives: [cilium]
+  - name: argocd
+    alternatives: [argocd]
+  - name: argo
+    alternatives: [argo]
+  - name: cosign
+    alternatives: [cosign]
+  - name: kubeconform
+    alternatives: [kubeconform]
