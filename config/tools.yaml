@@ -47,7 +47,7 @@ commands:
   - name: age
     alternatives: [age]
   - name: cilium
-    alternatives: [cilium]
+    alternatives: [cilium, cilium-cli]
   - name: argocd
     alternatives: [argocd]
   - name: argo
