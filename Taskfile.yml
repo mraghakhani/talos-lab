@@ -140,7 +140,10 @@ tasks:
     desc: Show desired nodes, VM states and DHCP leases
     cmds:
       - ./scripts/14-vms-status.sh
-
+  vm:start:
+    desc: Start all lab VMs idempotently
+    cmds:
+    - ./scripts/34-vms-start.sh
   vm:destroy:
     desc: Destroy only VMs and disks declared in config/nodes.yaml
     cmds:
