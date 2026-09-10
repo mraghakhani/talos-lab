@@ -171,6 +171,60 @@ tasks:
       - task: host:check
       - task: proxy:check:host
 
+  talos:render:
+    desc: Render committed Talos patch templates and per-node network documents
+    cmds:
+      - ./scripts/24-talos-render-patches.sh
+
+  talos:maintenance:check:
+    desc: Verify all six ISO-booted nodes are reachable in maintenance mode and expose expected disks
+    cmds:
+      - ./scripts/25-talos-maintenance-check.sh
+
+  talos:generate:
+    desc: Generate/reuse cluster secrets and render six node-specific Talos machine configs
+    cmds:
+      - task: talos:render
+      - ./scripts/26-talos-generate.sh
+
+  talos:validate:
+    desc: Strictly validate generated Talos configs and verify sensitive output stays gitignored
+    cmds:
+      - task: talos:generate
+      - ./scripts/27-talos-validate.sh
+
+  talos:apply:
+    desc: Install/configure Talos on all six maintenance-mode VMs using generated machine configs
+    cmds:
+      - task: talos:maintenance:check
+      - task: talos:validate
+      - ./scripts/28-talos-apply.sh
+
+  talos:secure:check:
+    desc: Verify all installed nodes have rebooted and are reachable through authenticated Talos API
+    cmds:
+      - ./scripts/29-talos-secure-check.sh
+
+  talos:bootstrap:
+    desc: Bootstrap etcd/Kubernetes exactly once from the first control-plane node
+    cmds:
+      - task: talos:secure:check
+      - ./scripts/30-talos-bootstrap.sh
+
+  talos:kubeconfig:
+    desc: Retrieve a standalone admin kubeconfig into the gitignored generated directory
+    cmds:
+      - ./scripts/31-talos-kubeconfig.sh
+
+  talos:status:
+    desc: Show Talos membership, etcd membership and Kubernetes node registration
+    cmds:
+      - ./scripts/32-talos-status.sh
+
+  vm:detach-iso:
+    desc: Detach Talos installation ISO from all VM definitions after successful installation
+    cmds:
+      - ./scripts/33-vms-detach-iso.sh
 
   tools:install:
     desc: Install workstation Kubernetes/GitOps/security CLI tools from Arch repositories

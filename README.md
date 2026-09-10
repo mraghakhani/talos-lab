@@ -269,3 +269,32 @@ Only after the plan is clean should you run:
 ```bash
 task vm:create
 ```
+
+## Talos cluster configuration milestone
+
+After all six libvirt VMs are running from the Talos ISO, the next stage is fully declarative:
+
+```bash
+task talos:maintenance:check
+task talos:generate
+task talos:validate
+task talos:apply
+```
+
+`talos:generate` creates a cluster secrets bundle once and reuses it on subsequent runs. The secrets bundle, node machine configs, `talosconfig`, and `kubeconfig` are written under `infrastructure/talos/generated/`, which is gitignored and must be treated as sensitive.
+
+After `talos:apply`, the nodes install Talos to `/dev/vda` and reboot. Verify authenticated API access before bootstrapping:
+
+```bash
+task talos:secure:check
+task vm:detach-iso
+task talos:bootstrap
+task talos:kubeconfig
+task talos:status
+```
+
+The Kubernetes API endpoint is `https://192.168.231.10:6443`, while `talosctl` uses the three individual control-plane addresses. The Layer-2 VIP does not become active until etcd/Kubernetes bootstrap has progressed far enough for VIP election.
+
+The generated Talos configuration intentionally sets the CNI to `none` and disables kube-proxy. Kubernetes nodes are therefore expected to report `NotReady` until the Cilium milestone is completed.
+
+Talos 1.13+ uses modern multi-document configuration for the host proxy and network settings: `EnvironmentConfig`, `LinkAliasConfig`, `LinkConfig`, `DHCPv4Config`, `HostnameConfig`, and `Layer2VIPConfig`. The older `machine.env` and `machine.network` configuration paths are deliberately avoided.

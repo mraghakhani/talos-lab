@@ -1,0 +1,15 @@
+# Role-specific Kubernetes node intent for control-plane nodes.
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  ${LAB_DOMAIN}/role: controlplane
+---
+# Cilium will provide kube-proxy replacement.
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+---
+# Talos 1.14 generates Flannel as its own document. Remove it so Cilium can own CNI.
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete
