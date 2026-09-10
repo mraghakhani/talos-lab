@@ -291,3 +291,23 @@ tasks:
     desc: HARD power off all lab VMs immediately; preserve definitions and disks
     cmds:
       - ./scripts/36-vms-force-off.sh
+
+  cilium:images:prepull:
+    desc: Pre-pull pinned Cilium chart images on all Talos nodes
+    cmds:
+      - ./scripts/37-cilium-images-prepull.sh
+
+  cilium:install:
+    desc: Install or upgrade pinned Cilium with Talos/KubePrism settings
+    cmds:
+      - ./scripts/38-cilium-install.sh
+
+  cilium:status:
+    desc: Wait for Cilium health and verify all Kubernetes nodes are Ready
+    cmds:
+      - ./scripts/39-cilium-status.sh
+
+  cilium:verify:
+    desc: Run the Cilium connectivity test suite
+    cmds:
+      - ./scripts/40-cilium-verify.sh

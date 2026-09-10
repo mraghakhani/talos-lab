@@ -1,0 +1,57 @@
+# Cilium 1.20.1 baseline for Talos Linux 1.14.
+# Keep the first networking milestone focused on CNI + kube-proxy replacement.
+# Gateway API, L2 announcements and LB IPAM are enabled in a later milestone.
+
+ipam:
+  mode: kubernetes
+
+routingMode: tunnel
+tunnelProtocol: vxlan
+
+kubeProxyReplacement: true
+k8sServiceHost: localhost
+k8sServicePort: "7445"
+
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
+
+securityContext:
+  capabilities:
+    ciliumAgent:
+      - CHOWN
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - IPC_LOCK
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    cleanCiliumState:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_RESOURCE
+
+operator:
+  replicas: 2
+
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+
+# We will enable these deliberately in the service-exposure milestone.
+gatewayAPI:
+  enabled: false
+
+l2announcements:
+  enabled: false
+
+prometheus:
+  enabled: false
