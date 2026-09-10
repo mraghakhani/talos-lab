@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v task >/dev/null 2>&1; then
+  exec task repo:check
+elif command -v go-task >/dev/null 2>&1; then
+  exec go-task repo:check
+else
+  echo "ERROR: go-task is required. Install the Arch package 'go-task'." >&2
+  exit 1
+fi

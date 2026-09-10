@@ -1,0 +1,27 @@
+schema: 1
+
+# Cluster/runtime versions are committed desired state. No "latest" tags.
+cluster:
+  talos: v1.14.0
+  kubernetes: v1.37.0
+
+# Pin each platform component when it is introduced. null means not implemented yet.
+platform:
+  cilium: null
+  argocd: null
+  argo_workflows: null
+  cert_manager: null
+  external_secrets: null
+  openbao: null
+  metrics_server: null
+  kube_prometheus_stack: null
+  loki: null
+  grafana_alloy: null
+  kyverno: null
+  trivy_operator: null
+  rabbitmq_cluster_operator: null
+  rabbitmq_topology_operator: null
+  keda: null
+
+# Local CLI packages on CachyOS/Arch intentionally follow the host package manager.
+# `task tools:check` records what is actually installed; cluster/runtime artifacts above are pinned.

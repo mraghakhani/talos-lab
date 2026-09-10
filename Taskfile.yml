@@ -10,7 +10,12 @@ tasks:
   default:
     desc: List available lab tasks
     cmds:
-      - go-task --list
+      - |
+        if command -v task >/dev/null 2>&1; then
+          task --list
+        else
+          go-task --list
+        fi
 
   bootstrap:
     desc: Install host dependencies, then validate the virtualization host
@@ -165,3 +170,57 @@ tasks:
     cmds:
       - task: host:check
       - task: proxy:check:host
+
+
+  tools:install:
+    desc: Install workstation Kubernetes/GitOps/security CLI tools from Arch repositories
+    cmds:
+      - task: host:install
+      - ./scripts/19-tools-install.sh
+
+  tools:check:
+    desc: Verify workstation CLI tools and print desired/installed versions
+    cmds:
+      - ./scripts/20-tools-check.sh
+
+  repo:secrets:check:
+    desc: Verify sensitive/generated paths are covered by gitignore
+    preconditions:
+      - sh: git rev-parse --is-inside-work-tree >/dev/null 2>&1
+        msg: This task must run inside a Git worktree
+    cmds:
+      - ./scripts/21-repo-secret-ignore-check.sh
+
+  repo:check:
+    desc: Run shell, YAML, Actions, Taskfile and secret-leak validation
+    cmds:
+      - ./scripts/22-repo-check.sh
+
+  git:status:
+    desc: Show Git branch, working tree and configured remotes
+    preconditions:
+      - sh: git rev-parse --is-inside-work-tree >/dev/null 2>&1
+        msg: This task must run inside a Git worktree
+    cmds:
+      - git status --short --branch
+      - echo
+      - git remote -v
+
+  repo:hooks:install:
+    desc: Configure this clone to use the committed Git hooks
+    preconditions:
+      - sh: git rev-parse --is-inside-work-tree >/dev/null 2>&1
+        msg: This task must run inside a Git worktree
+    cmds:
+      - git config core.hooksPath .githooks
+      - echo "Installed repository hooks via core.hooksPath=.githooks"
+
+  repo:hooks:status:
+    desc: Show the Git hooks path used by this clone
+    cmds:
+      - 'echo "core.hooksPath=$$(git config --get core.hooksPath || echo default)"'
+
+  repo:migrate-layout:
+    desc: Remove known obsolete files/directories left behind by archive overlays
+    cmds:
+      - ./scripts/23-repo-migrate-layout.sh

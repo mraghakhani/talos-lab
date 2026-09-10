@@ -6,7 +6,7 @@ The repository is intentionally automation-first:
 
 - `Taskfile.yml` is the human-facing command interface.
 - `config/` contains committed, non-secret desired infrastructure state.
-- `libvirt/*.tmpl` contains reusable libvirt definitions.
+- `infrastructure/libvirt/*.tmpl` contains reusable libvirt definitions.
 - `scripts/` contains idempotent implementation logic.
 - `state/` contains generated/downloaded runtime artifacts and is gitignored.
 - Generated Talos secrets/configuration will be gitignored in the next milestone.
@@ -18,9 +18,9 @@ The repository is intentionally automation-first:
 | talos-cp-01 | control plane | 192.168.231.11 | 2 | 2560 MiB | 20 GiB | - |
 | talos-cp-02 | control plane | 192.168.231.12 | 2 | 2560 MiB | 20 GiB | - |
 | talos-cp-03 | control plane | 192.168.231.13 | 2 | 2560 MiB | 20 GiB | - |
-| talos-worker-01 | worker | 192.168.231.21 | 4 | 4608 MiB | 30 GiB | 40 GiB |
-| talos-worker-02 | worker | 192.168.231.22 | 4 | 4608 MiB | 30 GiB | 40 GiB |
-| talos-worker-03 | worker | 192.168.231.23 | 4 | 4608 MiB | 30 GiB | 40 GiB |
+| talos-worker-01 | worker | 192.168.231.21 | 4 | 4608 MiB | 20 GiB | 30 GiB |
+| talos-worker-02 | worker | 192.168.231.22 | 4 | 4608 MiB | 20 GiB | 30 GiB |
+| talos-worker-03 | worker | 192.168.231.23 | 4 | 4608 MiB | 20 GiB | 30 GiB |
 
 Additional addresses:
 
@@ -53,10 +53,12 @@ The lab explicitly verifies both paths before Talos configuration is applied. A 
 
 ## Version pinning
 
-Talos is pinned in `config/lab.env`:
+Talos and Kubernetes are pinned in `config/versions.yaml`:
 
-```text
-TALOS_VERSION=v1.14.0
+```yaml
+cluster:
+  talos: v1.14.0
+  kubernetes: v1.37.0
 ```
 
 Do not replace this with `latest`. Upgrades will be explicit, reviewed changes to desired state.
@@ -85,6 +87,14 @@ List all available tasks:
 ```bash
 task --list
 ```
+
+When overlaying an updated archive onto an older checkout, run the safe layout migration once:
+
+```bash
+task repo:migrate-layout
+```
+
+It removes the former root `libvirt/` directory only after confirming its templates match the new `infrastructure/libvirt/` copies.
 
 ## Provisioning sequence
 
@@ -177,12 +187,45 @@ The download cache remains intact.
 
 Change infrastructure here rather than editing libvirt objects by hand:
 
-- `config/lab.env` — shared network, proxy, version and storage settings
+- `config/lab.env` — shared network, proxy and storage settings
+- `config/versions.yaml` — pinned cluster/platform component versions
+- `config/tools.yaml` — workstation CLI/package inventory
 - `config/nodes.yaml` — VM inventory/resources
-- `libvirt/network.xml.tmpl` — network definition template
-- `libvirt/pool.xml.tmpl` — storage-pool template
+- `infrastructure/libvirt/network.xml.tmpl` — network definition template
+- `infrastructure/libvirt/pool.xml.tmpl` — storage-pool template
 
 If a definition changes after a libvirt object already exists, recreate that object through its Task target rather than changing it manually.
+
+
+## Repository safety and developer tooling
+
+Install the optional-but-recommended workstation Kubernetes/GitOps/security CLIs:
+
+```bash
+task tools:install
+task tools:check
+
+# Stock Arch installs the executable as `go-task`; if you do not have a
+# shell alias named `task`, use `go-task` for the same commands.
+```
+
+Before every push, run:
+
+```bash
+task repo:check
+```
+
+Optionally enforce the same gate before every local commit:
+
+```bash
+task repo:hooks:install
+```
+
+The repository gate performs Bash syntax checks, ShellCheck, YAML linting, GitHub Actions linting, Taskfile parsing, Git whitespace checks, secret-ignore assertions, and a gitleaks scan. The same validation runs in `.github/workflows/validate.yml` on pushes and pull requests.
+
+Generated Talos configuration, kubeconfigs, OpenBao runtime/recovery material, age identities, private keys, state, downloads, and machine-local overrides are gitignored. Encrypted SOPS documents may be committed later by design; the private age identity may not.
+
+See `docs/repository.md` for the GitHub/Gitea remote model and branch-protection guidance.
 
 ## Planned next milestone
 
