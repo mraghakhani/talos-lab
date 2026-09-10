@@ -143,7 +143,7 @@ tasks:
   vm:start:
     desc: Start all lab VMs idempotently
     cmds:
-    - ./scripts/34-vms-start.sh
+      - ./scripts/34-vms-start.sh
   vm:destroy:
     desc: Destroy only VMs and disks declared in config/nodes.yaml
     cmds:
@@ -281,3 +281,13 @@ tasks:
     desc: Remove known obsolete files/directories left behind by archive overlays
     cmds:
       - ./scripts/23-repo-migrate-layout.sh
+
+  talos:images:prepull:
+    desc: Pre-pull pinned Talos/Kubernetes images on nodes with retries
+    cmds:
+      - ./scripts/35-talos-images-prepull.sh
+
+  vm:stop:force:
+    desc: HARD power off all lab VMs immediately; preserve definitions and disks
+    cmds:
+      - ./scripts/36-vms-force-off.sh
