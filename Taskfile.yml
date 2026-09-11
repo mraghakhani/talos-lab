@@ -311,3 +311,23 @@ tasks:
     desc: Run the Cilium connectivity test suite
     cmds:
       - ./scripts/40-cilium-verify.sh
+
+  cilium:test-images:prepull:
+    desc: Pre-pull images used by the installed Cilium CLI connectivity suite
+    cmds:
+      - ./scripts/41-cilium-test-images-prepull.sh
+
+  cilium:test:cleanup:
+    desc: Remove resources left by previous Cilium connectivity tests
+    cmds:
+      - ./scripts/42-cilium-test-cleanup.sh
+
+  cilium:verify:full:
+    desc: Run full upstream Cilium suite; requires direct pod Internet access
+    cmds:
+      - ./scripts/43-cilium-verify-full.sh
+
+  cilium:hubble:status:
+    desc: Inspect Cilium and Hubble Relay/UI deployment health
+    cmds:
+      - ./scripts/44-cilium-hubble-status.sh
