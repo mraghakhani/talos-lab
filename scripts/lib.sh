@@ -36,3 +36,16 @@ die() { printf '\033[1;31mERROR:\033[0m %s\n' "$*" >&2; exit 1; }
 need_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "required command not found: $1"
 }
+
+ensure_libvirt_socket() {
+  local socket_unit="$1"
+
+  need_cmd systemctl
+  if systemctl is-active --quiet "$socket_unit"; then
+    return
+  fi
+
+  log "Starting libvirt socket '$socket_unit'"
+  sudo systemctl enable --now "$socket_unit" \
+    || die "cannot start $socket_unit; check libvirt installation and sudo access"
+}

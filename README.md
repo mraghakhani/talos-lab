@@ -121,6 +121,11 @@ The rendered definition is written to:
 state/rendered/network.xml
 ```
 
+When UFW is active, `task network:up` adds scoped rules for DHCP on `virbr231`
+and routed NTP/NTS egress (`UDP/123`, `TCP/4460`) from the lab subnet. Without
+DHCP access, guests receive no reserved address. Without time-sync access, Talos
+remains in `Booting` and does not start its authenticated API.
+
 ### 3. Verify the proxy from the VM-facing address
 
 ```bash

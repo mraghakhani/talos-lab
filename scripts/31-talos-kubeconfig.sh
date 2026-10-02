@@ -10,7 +10,7 @@ GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
 TALOSCONFIG="$GENERATED/talosconfig"
 KUBECONFIG="$GENERATED/kubeconfig"
 NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-cp_ip="$(yq -r '.nodes[] | select(.role == "controlplane") | .ip' "$NODES_FILE" | head -n1)"
+cp_ip="$(yq -r '[.nodes[] | select(.role == "controlplane") | .ip][0]' "$NODES_FILE")"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
 

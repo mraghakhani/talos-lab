@@ -19,6 +19,11 @@ task vm:create
 task vm:status
 ```
 
+When UFW is active, `task network:up` leaves it enabled and permits DHCP on the
+lab bridge plus NTP/NTS egress (`UDP/123`, `TCP/4460`) from the lab subnet.
+Empty leases indicate blocked DHCP. Talos stuck in `Booting` with `apid` waiting
+for time sync indicates blocked NTP/NTS. Rerun `task network:up` in either case.
+
 ## VM lifecycle
 
 Start all VMs using the repository's idempotent start task/script if present.
@@ -78,7 +83,7 @@ Bootstrap only when the first control plane is explicitly waiting to bootstrap a
 task talos:bootstrap
 ```
 
-Never use a stale local marker as the only proof that bootstrap succeeded.
+Never use a stale local marker as the only proof that bootstrap succeeded. The bootstrap task checks live etcd membership first, refuses to bootstrap when any control plane has existing etcd member data, and writes the completion marker only after membership is reachable.
 
 ## etcd diagnostics
 

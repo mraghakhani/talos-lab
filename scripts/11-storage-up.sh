@@ -4,6 +4,7 @@ set -euo pipefail
 source "$(dirname "$0")/lib.sh"
 
 need_cmd virsh
+ensure_libvirt_socket virtstoraged.socket
 POOL_XML="$PROJECT_ROOT/state/rendered/pool.xml"
 [[ -f "$POOL_XML" ]] || die "missing $POOL_XML; run task storage:render"
 

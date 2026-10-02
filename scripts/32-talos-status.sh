@@ -17,7 +17,7 @@ COMPLETE_MARKER="$GENERATED/.bootstrap-complete"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing"
 
-cp_ip="$(yq -r '.nodes[] | select(.role == "controlplane") | .ip' "$NODES_FILE" | head -n1)"
+cp_ip="$(yq -r '[.nodes[] | select(.role == "controlplane") | .ip][0]' "$NODES_FILE")"
 [[ -n "$cp_ip" && "$cp_ip" != null ]] || die "no control-plane node found"
 
 talos_direct=(talosctl --talosconfig "$TALOSCONFIG" --endpoints "$cp_ip" --nodes "$cp_ip")
