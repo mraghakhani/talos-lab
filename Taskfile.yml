@@ -224,6 +224,10 @@ tasks:
     cmds:
       - ./scripts/32-talos-status.sh
 
+  talos:etcd:snapshot:
+    desc: get a snapshot of etcd
+    cmds:
+      - ./scripts/45-etcd-snapshot.sh
   vm:detach-iso:
     desc: Detach Talos installation ISO from all VM definitions after successful installation
     cmds:
