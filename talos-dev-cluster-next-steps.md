@@ -127,12 +127,12 @@ that fits the CNI and lab requirements. - An Ingress controller if
 compatibility with existing applications matters more than learning
 Gateway API.
 
--   [ ] Decide how LAN clients will reach the cluster.
--   [ ] Decide whether a `LoadBalancer` implementation is required for
+-   [x] Decide how LAN clients will reach the cluster.
+-   [x] Decide whether a `LoadBalancer` implementation is required for
     the chosen network.
--   [ ] For a local QEMU network, verify which addresses are reachable
+-   [x] For a local QEMU network, verify which addresses are reachable
     from the host and LAN before selecting an IP pool.
--   [ ] Deploy a tiny test app and expose it with an HTTP route.
+-   [x] Deploy a tiny test app and expose it with an HTTP route.
 -   [ ] Test DNS, routing, and access from both the host and another LAN
     device if needed.
 -   [ ] Document firewall rules and address reservations.
