@@ -6,6 +6,7 @@ cluster:
 # Pin each platform component when it is introduced. null means not implemented yet.
 platform:
   cilium: 1.20.1
+  gateway_api: v1.6.1
   argocd: null
   argo_workflows: null
   cert_manager: null

@@ -1,0 +1,20 @@
+# Rendered by scripts/47-cilium-lbipam-apply.sh — do not edit rendered output.
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lab-lb-pool
+spec:
+  # Explicit start/stop range kept outside the libvirt DHCP range.
+  blocks:
+    - start: ${CILIUM_LB_START}
+      stop: ${CILIUM_LB_END}
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: lab-l2-policy
+spec:
+  # Announce Service LoadBalancer IPs via ARP/NDP on the VM NIC.
+  loadBalancerIPs: true
+  interfaces:
+    - ${CILIUM_LB_INTERFACE}

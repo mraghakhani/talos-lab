@@ -228,6 +228,14 @@ tasks:
     desc: get a snapshot of etcd
     cmds:
       - ./scripts/45-etcd-snapshot.sh
+  cilium:gatewayapi:install:
+    desc: Install pinned Gateway API CRDs (standard channel) required by Cilium Gateway API
+    cmds:
+      - ./scripts/46-gateway-api-crds-install.sh
+  cilium:lbipam:apply:
+    desc: Render and apply CiliumLoadBalancerIPPool + CiliumL2AnnouncementPolicy from lab.env
+    cmds:
+      - ./scripts/47-cilium-lbipam-apply.sh
   vm:detach-iso:
     desc: Detach Talos installation ISO from all VM definitions after successful installation
     cmds:
