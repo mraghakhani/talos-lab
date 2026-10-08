@@ -9,7 +9,7 @@ platform:
   gateway_api: v1.6.1
   argocd: null
   argo_workflows: null
-  cert_manager: null
+  cert_manager: 1.21.2
   external_secrets: null
   openbao: null
   metrics_server: null

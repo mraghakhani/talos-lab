@@ -343,3 +343,12 @@ tasks:
     desc: Inspect Cilium and Hubble Relay/UI deployment health
     cmds:
       - ./scripts/44-cilium-hubble-status.sh
+  cert-manager:install:
+    desc: Install or upgrade cert-manager
+    cmds:
+      - ./scripts/48-cert-manager-install.sh
+  cert-manager:status:
+    desc: Show cert-manager pods and issuers
+    cmds:
+      - kubectl -n cert-manager get pods
+      - kubectl get clusterissuer
