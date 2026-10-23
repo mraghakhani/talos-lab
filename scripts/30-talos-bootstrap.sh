@@ -7,9 +7,6 @@ need_cmd talosctl
 need_cmd timeout
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 PENDING_MARKER="$GENERATED/.bootstrap-requested"
 COMPLETE_MARKER="$GENERATED/.bootstrap-complete"
 

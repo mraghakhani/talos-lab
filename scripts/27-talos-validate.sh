@@ -6,8 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd talosctl
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 failures=0
 
 [[ -s "$GENERATED/secrets.yaml" ]] || die "Talos secrets missing; run task talos:generate"

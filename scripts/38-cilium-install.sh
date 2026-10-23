@@ -9,7 +9,6 @@ need_cmd yq
 
 VERSIONS="$PROJECT_ROOT/config/versions.yaml"
 VALUES="$PROJECT_ROOT/platform/cilium/values.yaml"
-KUBECONFIG="$PROJECT_ROOT/infrastructure/talos/generated/kubeconfig"
 
 [[ -s "$KUBECONFIG" ]] || die "kubeconfig missing; run task talos:kubeconfig"
 [[ -s "$VALUES" ]] || die "Cilium values missing: $VALUES"

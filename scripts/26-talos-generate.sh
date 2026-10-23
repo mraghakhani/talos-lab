@@ -7,11 +7,8 @@ need_cmd talosctl
 need_cmd yq
 
 VERSIONS="$PROJECT_ROOT/config/versions.yaml"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 PATCH_DIR="$PROJECT_ROOT/state/rendered/talos"
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
 SECRETS="$GENERATED/secrets.yaml"
-TALOSCONFIG="$GENERATED/talosconfig"
 
 TALOS_VERSION="$(yq -r '.cluster.talos' "$VERSIONS")"
 KUBERNETES_VERSION="$(yq -r '.cluster.kubernetes' "$VERSIONS")"

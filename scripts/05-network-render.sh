@@ -7,7 +7,6 @@ need_cmd envsubst
 need_cmd yq
 
 TEMPLATE="$PROJECT_ROOT/infrastructure/libvirt/network.xml.tmpl"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 OUT_DIR="$PROJECT_ROOT/state/rendered"
 OUT="$OUT_DIR/network.xml"
 

@@ -7,7 +7,6 @@ need_cmd virsh
 need_cmd virt-install
 need_cmd yq
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 ISO_PATH="$LIBVIRT_POOL_PATH/$TALOS_ISO_NAME"
 
 [[ -f "$ISO_PATH" ]] || die "Talos ISO missing at $ISO_PATH; run task image:download"

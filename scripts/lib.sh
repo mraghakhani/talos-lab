@@ -27,6 +27,16 @@ if [[ -z "${TALOS_VERSION:-}" ]]; then
   TALOS_VERSION="$(yq -r '.cluster.talos' "$VERSIONS_FILE")"
 fi
 
+# Shared artifact paths. Define once here; scripts must not re-derive these.
+NODES_FILE="${NODES_FILE:-$PROJECT_ROOT/config/nodes.yaml}"
+GENERATED="${GENERATED:-$PROJECT_ROOT/infrastructure/talos/generated}"
+TALOSCONFIG="${TALOSCONFIG:-$GENERATED/talosconfig}"
+KUBECONFIG="${KUBECONFIG:-$GENERATED/kubeconfig}"
+CACHE_DIR="${CACHE_DIR:-$PROJECT_ROOT/state/downloads/talos/$TALOS_VERSION}"
+if [[ -n "${TALOS_ISO_NAME:-}" ]]; then
+  ISO_CACHE="${ISO_CACHE:-$CACHE_DIR/$TALOS_ISO_NAME}"
+fi
+
 log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 ok() { printf '\033[1;32mOK\033[0m   %s\n' "$*"; }
 note() { printf '\033[1;36mNOTE\033[0m %s\n' "$*"; }

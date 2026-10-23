@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd cilium-cli
 need_cmd sleep
 
-KUBECONFIG="$PROJECT_ROOT/infrastructure/talos/generated/kubeconfig"
 [[ -s "$KUBECONFIG" ]] || die "kubeconfig missing; run task talos:kubeconfig"
 
 export KUBECONFIG

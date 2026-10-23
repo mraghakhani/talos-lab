@@ -10,10 +10,6 @@ need_cmd yq
 need_cmd awk
 need_cmd sort
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
 [[ -s "$NODES_FILE" ]] || die "node inventory missing: $NODES_FILE"
 

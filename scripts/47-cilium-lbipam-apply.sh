@@ -11,7 +11,6 @@ need_cmd envsubst
 need_cmd kubectl
 
 TEMPLATE="$PROJECT_ROOT/platform/cilium/lb-ipam.yaml.tmpl"
-KUBECONFIG="$PROJECT_ROOT/infrastructure/talos/generated/kubeconfig"
 OUT_DIR="$PROJECT_ROOT/state/rendered"
 OUT="$OUT_DIR/cilium-lb-ipam.yaml"
 

@@ -9,9 +9,6 @@ need_cmd yq
 need_cmd grep
 
 VERSIONS="$PROJECT_ROOT/config/versions.yaml"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
 [[ -s "$VERSIONS" ]] || die "version manifest missing: $VERSIONS"

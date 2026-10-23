@@ -82,7 +82,7 @@ Legend:
   - any host-side CA material
   - document restore procedure
 - [ ] Add libvirt XML snapshot/export task for auditability
-- [ ] Add `task diagnose:bundle`
+- [x] Add `task diagnose:bundle`
   - VM status
   - Talos service status
   - etcd members

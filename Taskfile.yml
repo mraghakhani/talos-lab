@@ -245,6 +245,11 @@ tasks:
     cmds:
       - ./scripts/53-cluster-status.sh
 
+  diagnose:bundle:
+    desc: Collect a read-only diagnostic bundle under state/diagnostics (no secrets)
+    cmds:
+      - ./scripts/54-diagnose-bundle.sh
+
   talos:etcd:snapshot:
     desc: get a snapshot of etcd
     cmds:

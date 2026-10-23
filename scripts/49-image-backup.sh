@@ -22,9 +22,6 @@ source "$(dirname "$0")/lib.sh"
 # gets the full image set offline. Same Talos version required: the containerd
 # metadata database is version-coupled.
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
 BACKUP_DIR="${IMAGE_BACKUP_DIR:-$PROJECT_ROOT/state/image-backup}"
 INVENTORY_DIR="$BACKUP_DIR/inventory"
 CAPTURE_ATTEMPTS="${IMAGE_BACKUP_ATTEMPTS:-3}"

@@ -11,10 +11,7 @@ need_cmd awk
 need_cmd sort
 
 VERSIONS="$PROJECT_ROOT/config/versions.yaml"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 VALUES="$PROJECT_ROOT/platform/cilium/values.yaml"
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
 [[ -s "$VALUES" ]] || die "Cilium values missing: $VALUES"

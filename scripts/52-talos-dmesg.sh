@@ -20,9 +20,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd talosctl
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 TAIL_LINES="${TALOS_DMESG_TAIL:-40}"
 
 selector="${1:-}"

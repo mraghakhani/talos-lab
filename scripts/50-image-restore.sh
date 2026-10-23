@@ -38,7 +38,6 @@ source "$(dirname "$0")/lib.sh"
 #   IMAGE_RESTORE_NBD    nbd device (default: /dev/nbd0)
 #   IMAGE_RESTORE_NODES  comma-separated node names (default: all in nodes.yaml)
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 BACKUP_DIR="${IMAGE_BACKUP_DIR:-$PROJECT_ROOT/state/image-backup}"
 NBD_DEVICE="${IMAGE_RESTORE_NBD:-/dev/nbd0}"
 MOUNT_DIR="/mnt/talos-image-restore"

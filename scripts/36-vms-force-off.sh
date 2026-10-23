@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd virsh
 need_cmd yq
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 [[ -s "$NODES_FILE" ]] || die "node inventory missing: $NODES_FILE"
 
 log "HARD power-off requested for all lab VMs"

@@ -7,10 +7,6 @@ need_cmd talosctl
 need_cmd timeout
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing; run task talos:generate"
 
 printf '%-20s %-15s %-10s %-10s\n' "NAME" "IP" "API" "HOSTNAME"

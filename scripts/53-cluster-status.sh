@@ -8,9 +8,8 @@ source "$(dirname "$0")/lib.sh"
 
 need_cmd kubectl
 
-KUBECONFIG_PATH="$PROJECT_ROOT/infrastructure/talos/generated/kubeconfig"
-[[ -s "$KUBECONFIG_PATH" ]] || die "kubeconfig missing; run task talos:kubeconfig"
-export KUBECONFIG="$KUBECONFIG_PATH"
+[[ -s "$KUBECONFIG" ]] || die "kubeconfig missing; run task talos:kubeconfig"
+export KUBECONFIG
 
 echo "== Nodes"
 kubectl get nodes -o wide

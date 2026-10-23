@@ -7,8 +7,6 @@ need_cmd curl
 need_cmd sha256sum
 need_cmd virsh
 
-CACHE_DIR="$PROJECT_ROOT/state/downloads/talos/$TALOS_VERSION"
-ISO_CACHE="$CACHE_DIR/$TALOS_ISO_NAME"
 SUMS_CACHE="$CACHE_DIR/sha256sum.txt"
 BASE="${TALOS_RELEASE_BASE_URL}/${TALOS_VERSION}"
 HOST_PROXY="${PROXY_SCHEME}://127.0.0.1:${PROXY_PORT}"

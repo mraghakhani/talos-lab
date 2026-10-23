@@ -6,8 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd virsh
 need_cmd yq
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-
 while IFS= read -r name; do
   [[ -n "$name" ]] || continue
 

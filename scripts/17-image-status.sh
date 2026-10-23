@@ -5,8 +5,6 @@ source "$(dirname "$0")/lib.sh"
 
 need_cmd sha256sum
 
-CACHE_DIR="$PROJECT_ROOT/state/downloads/talos/$TALOS_VERSION"
-ISO_CACHE="$CACHE_DIR/$TALOS_ISO_NAME"
 SUMS_CACHE="$CACHE_DIR/sha256sum.txt"
 POOL_ISO="$LIBVIRT_POOL_PATH/$TALOS_ISO_NAME"
 

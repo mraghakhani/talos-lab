@@ -6,9 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd talosctl
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 SNAPSHOT_DIR="$PROJECT_ROOT/state/etcd-snapshots"
 
 [[ -s "$TALOSCONFIG" ]] || die "talosconfig missing"

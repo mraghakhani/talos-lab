@@ -9,7 +9,6 @@ need_cmd yq
 PATCH_SRC="$PROJECT_ROOT/infrastructure/talos/patches"
 PATCH_OUT="$PROJECT_ROOT/state/rendered/talos"
 NODE_OUT="$PATCH_OUT/nodes"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 
 mkdir -p "$NODE_OUT"
 

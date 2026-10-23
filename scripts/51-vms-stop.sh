@@ -13,8 +13,6 @@ need_cmd virsh
 need_cmd yq
 need_cmd talosctl
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
-TALOSCONFIG="$PROJECT_ROOT/infrastructure/talos/generated/talosconfig"
 STOP_TIMEOUT_SECONDS="${VM_STOP_TIMEOUT:-120}"
 API_SHUTDOWN_GRACE_SECONDS="${VM_STOP_API_GRACE:-30}"
 [[ -s "$NODES_FILE" ]] || die "node inventory missing: $NODES_FILE"

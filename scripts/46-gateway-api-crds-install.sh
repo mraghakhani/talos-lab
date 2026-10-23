@@ -11,7 +11,6 @@ need_cmd kubectl
 need_cmd yq
 
 VERSIONS="$PROJECT_ROOT/config/versions.yaml"
-KUBECONFIG="$PROJECT_ROOT/infrastructure/talos/generated/kubeconfig"
 HOST_PROXY="${PROXY_SCHEME}://127.0.0.1:${PROXY_PORT}"
 
 [[ -s "$KUBECONFIG" ]] || die "kubeconfig missing; run task talos:kubeconfig"

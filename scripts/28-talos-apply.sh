@@ -6,9 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd talosctl
 need_cmd yq
 
-GENERATED="$PROJECT_ROOT/infrastructure/talos/generated"
-TALOSCONFIG="$GENERATED/talosconfig"
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 APPLY_ATTEMPTS="${TALOS_APPLY_ATTEMPTS:-5}"
 APPLY_RETRY_DELAY="${TALOS_APPLY_RETRY_DELAY:-15}"
 

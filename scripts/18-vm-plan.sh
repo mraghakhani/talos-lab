@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd yq
 need_cmd virsh
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 ISO_PATH="$LIBVIRT_POOL_PATH/$TALOS_ISO_NAME"
 
 printf '%-20s %-13s %-16s %-18s %5s %8s %8s %9s\n' \

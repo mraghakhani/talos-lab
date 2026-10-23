@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 need_cmd talosctl
 need_cmd yq
 
-NODES_FILE="$PROJECT_ROOT/config/nodes.yaml"
 TALOS_VERSION="$(yq -r '.cluster.talos' "$PROJECT_ROOT/config/versions.yaml")"
 failures=0
 
