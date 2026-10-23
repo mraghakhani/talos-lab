@@ -1,0 +1,19 @@
+# mise project environment — https://mise.jdx.dev
+#
+# Applied automatically when the shell enters this directory (mise activate is
+# already wired in Omarchy's zshrc). mise owns only the operator shell
+# environment; Taskfile.yml stays the task entry point, and all scripts remain
+# self-sufficient via scripts/lib.sh + config/lab.env (no mise required).
+#
+# Machine-local overrides belong in mise.local.toml (gitignored).
+
+[env]
+# Lab-only kubeconfig: kubectl in this directory sees ONLY the talos-lab
+# cluster, so an operator can never hit another cluster by accident.
+KUBECONFIG = "{{config_root}}/infrastructure/talos/generated/kubeconfig"
+TALOSCONFIG = "{{config_root}}/infrastructure/talos/generated/talosconfig"
+
+# Deliberately NOT exporting http_proxy/https_proxy here: the shell proxy would
+# break traffic to local services (e.g. git push to gitea on 127.0.0.1:3000)
+# unless NO_PROXY is maintained. Scripts already read the proxy from
+# config/lab.env where the scope is controlled.

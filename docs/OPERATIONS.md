@@ -8,6 +8,29 @@ Use Taskfile targets as the operational API. Prefer tasks over direct commands.
 task repo:check
 ```
 
+## Operator shell environment (mise)
+
+`mise.toml` at the repo root exports `KUBECONFIG` and `TALOSCONFIG` automatically
+when the shell enters this directory (mise is preinstalled on the host and
+`mise activate` is wired into the zshrc by Omarchy). First time in a clone, run:
+
+```bash
+mise trust
+```
+
+Behavior:
+
+- `KUBECONFIG` points only at the lab kubeconfig, so `kubectl` in this directory
+can never reach another cluster by accident.
+- Scripts do not depend on mise: `scripts/lib.sh` + `config/lab.env` remain the
+source of truth and work in any shell.
+- The proxy is deliberately not exported into the shell (it would break local
+services such as the gitea remote without maintaining `NO_PROXY`); scripts read
+the proxy from `config/lab.env` themselves.
+- Machine-local overrides go in `mise.local.toml` (gitignored).
+
+Taskfile.yml stays the task entry point; mise is only the shell environment.
+
 ## Host / libvirt
 
 ```bash

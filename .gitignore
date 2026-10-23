@@ -1,5 +1,7 @@
 # Machine-local configuration / overrides
 config/lab.local.env
+mise.local.toml
+.mise.local.toml
 .env
 .env.*
 !.env.example
