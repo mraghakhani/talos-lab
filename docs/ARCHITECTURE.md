@@ -7,13 +7,10 @@ CachyOS laptop
 ├── libvirt / QEMU / KVM
 ├── xray HTTP proxy :10808
 ├── virbr231 192.168.231.1/24
-└── six Talos VMs
-    ├── cp-01 192.168.231.11
-    ├── cp-02 192.168.231.12
-    ├── cp-03 192.168.231.13
-    ├── worker-01 192.168.231.21
-    ├── worker-02 192.168.231.22
-    └── worker-03 192.168.231.23
+└── three combined Talos VMs (controlplane, schedulable)
+    ├── talos-node-01 192.168.231.11
+    ├── talos-node-02 192.168.231.12
+    └── talos-node-03 192.168.231.13
 ```
 
 Kubernetes API endpoint:

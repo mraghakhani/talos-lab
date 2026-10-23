@@ -122,12 +122,12 @@ tasks:
       - ./scripts/17-image-status.sh
 
   vm:plan:
-    desc: Print and validate the desired six-VM topology without creating domains
+    desc: Print and validate the desired VM topology without creating domains
     cmds:
       - ./scripts/18-vm-plan.sh
 
   vm:create:
-    desc: Create all six Talos VMs from config/nodes.yaml
+    desc: Create every Talos VM from config/nodes.yaml
     cmds:
       - task: network:up
       - task: proxy:check:lab
@@ -150,7 +150,7 @@ tasks:
       - ./scripts/15-vms-destroy.sh
 
   infra:up:
-    desc: Bring up network, storage, pinned Talos image and all six VMs
+    desc: Bring up network, storage, pinned Talos image and every VM
     cmds:
       - task: vm:create
 
@@ -180,12 +180,12 @@ tasks:
       - ./scripts/24-talos-render-patches.sh
 
   talos:maintenance:check:
-    desc: Verify all six ISO-booted nodes are reachable in maintenance mode and expose expected disks
+    desc: Verify all ISO-booted nodes are reachable in maintenance mode and expose expected disks
     cmds:
       - ./scripts/25-talos-maintenance-check.sh
 
   talos:generate:
-    desc: Generate/reuse cluster secrets and render six node-specific Talos machine configs
+    desc: Generate/reuse cluster secrets and render per-node Talos machine configs
     cmds:
       - task: talos:render
       - ./scripts/26-talos-generate.sh
@@ -197,9 +197,15 @@ tasks:
       - ./scripts/27-talos-validate.sh
 
   talos:apply:
-    desc: Install/configure Talos on all six maintenance-mode VMs using generated machine configs
+    desc: Install/configure Talos on every maintenance-mode VM using generated machine configs
     cmds:
       - task: talos:maintenance:check
+      - task: talos:validate
+      - ./scripts/28-talos-apply.sh
+
+  talos:config:apply:
+    desc: Re-apply generated machine configs to already-installed nodes (day-2 updates)
+    cmds:
       - task: talos:validate
       - ./scripts/28-talos-apply.sh
 
@@ -224,10 +230,33 @@ tasks:
     cmds:
       - ./scripts/32-talos-status.sh
 
+  talos:dmesg:
+    desc: Print Talos kernel/machined logs per node (optional args, node name or IP and filter)
+    cmds:
+      - ./scripts/52-talos-dmesg.sh {{.CLI_ARGS}}
+
+  talos:health:
+    desc: Built-in talosctl cluster health check (etcd quorum, control-plane components)
+    cmds:
+      - talosctl --talosconfig infrastructure/talos/generated/talosconfig health {{.CLI_ARGS}}
+
+  cluster:status:
+    desc: Show Kubernetes nodes, pods and recent events
+    cmds:
+      - ./scripts/53-cluster-status.sh
+
   talos:etcd:snapshot:
     desc: get a snapshot of etcd
     cmds:
       - ./scripts/45-etcd-snapshot.sh
+  images:backup:
+    desc: Record image inventories and back up containerd stores from node disks before teardown
+    cmds:
+      - ./scripts/49-image-backup.sh
+  images:restore:
+    desc: Seed fresh node disks with the captured containerd image store (run with VMs off)
+    cmds:
+      - ./scripts/50-image-restore.sh
   cilium:gatewayapi:install:
     desc: Install pinned Gateway API CRDs (standard channel) required by Cilium Gateway API
     cmds:
@@ -299,6 +328,10 @@ tasks:
     cmds:
       - ./scripts/35-talos-images-prepull.sh
 
+  vm:stop:
+    desc: Gracefully power off all lab VMs via ACPI shutdown and wait
+    cmds:
+      - ./scripts/51-vms-stop.sh
   vm:stop:force:
     desc: HARD power off all lab VMs immediately; preserve definitions and disks
     cmds:

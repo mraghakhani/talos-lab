@@ -25,24 +25,30 @@ Last known-good milestone from the lab build.
 
 | Name | Role | IP | vCPU | RAM | OS disk | data disk |
 |---|---|---:|---:|---:|---:|---:|
-| talos-cp-01 | controlplane | 192.168.231.11 | 2 | 2560 MiB | 20 GiB | - |
-| talos-cp-02 | controlplane | 192.168.231.12 | 2 | 2560 MiB | 20 GiB | - |
-| talos-cp-03 | controlplane | 192.168.231.13 | 2 | 2560 MiB | 20 GiB | - |
-| talos-worker-01 | worker | 192.168.231.21 | 4 | 4608 MiB | 20 GiB | 30 GiB |
-| talos-worker-02 | worker | 192.168.231.22 | 4 | 4608 MiB | 20 GiB | 30 GiB |
-| talos-worker-03 | worker | 192.168.231.23 | 4 | 4608 MiB | 20 GiB | 30 GiB |
+| talos-node-01 | controlplane | 192.168.231.11 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+| talos-node-02 | controlplane | 192.168.231.12 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+| talos-node-03 | controlplane | 192.168.231.13 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+
+All three nodes are combined controlplane+worker machines (Talos control-plane
+nodes are schedulable by default). Data disks are reserved for future
+Rook-Ceph OSDs.
 
 ## Cluster
 
-- Talos: `v1.14.0`
+- Talos: `v1.14.4`
 - Kubernetes: `v1.37.0`
 - Cilium: `1.20.1`
 - Three etcd voting members
-- Six Kubernetes nodes are Ready
+- Three combined Kubernetes nodes are Ready (scheduled workloads land on the control-plane machines)
 - Flannel disabled
 - kube-proxy disabled
 - Cilium provides CNI + kube-proxy replacement
 - Hubble Relay/UI enabled
+- cert-manager: `1.21.2` (Helm, own CRDs)
+- Internal CA: `lab-selfsigned` -> `lab-ca` root (see ADR-009)
+- Argo CD UI: `https://argocd.lab.example.com` via Gateway on
+  `192.168.231.201`, TLS terminated at Envoy, plaintext backend
+- Cilium LB-IPAM pool: `192.168.231.200-220`, L2-announced on `virbr231`
 
 ## Cilium verification model
 

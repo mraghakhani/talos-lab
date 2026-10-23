@@ -6,6 +6,18 @@ source "$(dirname "$0")/lib.sh"
 need_cmd virsh
 ensure_libvirt_socket virtnetworkd.socket
 
+ufw_rules_present() {
+  local rules_file=/etc/ufw/user.rules
+  local port
+  [[ -r "$rules_file" ]] || return 1
+  for port in 67 123 4460; do
+    if ! grep -q -- "-i $LAB_BRIDGE .*--dport $port " "$rules_file"; then
+      return 1
+    fi
+  done
+  return 0
+}
+
 ensure_ufw_lab_access() {
   if ! systemctl is-active --quiet ufw.service; then
     return
@@ -13,6 +25,17 @@ ensure_ufw_lab_access() {
 
   need_cmd ufw
   log "Allowing required lab traffic through UFW"
+
+  if ! sudo -n true 2>/dev/null; then
+    # Non-interactive session (no sudo password available). Only proceed when
+    # the required rules are provably already present; never silently skip.
+    if ufw_rules_present; then
+      note "sudo unavailable non-interactively; verified existing UFW rules for $LAB_BRIDGE in /etc/ufw/user.rules"
+      return
+    fi
+    die "sudo is required to add UFW rules for $LAB_BRIDGE but is not available non-interactively; run 'task network:up' from an interactive terminal"
+  fi
+
   sudo ufw allow in on "$LAB_BRIDGE" proto udp \
     from 0.0.0.0 port 68 to 255.255.255.255 port 67 \
     comment "$LAB_NAME DHCP" >/dev/null

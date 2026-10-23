@@ -34,9 +34,17 @@ log "Verifying SHA-256"
   grep "  ${TALOS_ISO_NAME}$" sha256sum.txt | sha256sum --check --strict -
 )
 
-# Copy into the system libvirt pool with libvirt/QEMU-readable ownership/permissions.
+# Copy into the system libvirt pool through the libvirt daemon (same access
+# level as every other virsh operation in this repo; no root shell required).
+# The pool volume is a derived copy of the verified cache, so replace it
+# wholesale on every run.
 log "Copying verified ISO into libvirt pool"
-sudo install -m 0644 "$ISO_CACHE" "$POOL_ISO"
+if virsh -c "$LIBVIRT_URI" vol-info "$TALOS_ISO_NAME" --pool "$LIBVIRT_POOL" >/dev/null 2>&1; then
+  virsh -c "$LIBVIRT_URI" vol-delete "$TALOS_ISO_NAME" --pool "$LIBVIRT_POOL" >/dev/null
+fi
+virsh -c "$LIBVIRT_URI" vol-create-as "$LIBVIRT_POOL" "$TALOS_ISO_NAME" \
+  "$(stat -c %s "$ISO_CACHE")" --format raw >/dev/null
+virsh -c "$LIBVIRT_URI" vol-upload --pool "$LIBVIRT_POOL" "$TALOS_ISO_NAME" "$ISO_CACHE" >/dev/null
 virsh -c "$LIBVIRT_URI" pool-refresh "$LIBVIRT_POOL" >/dev/null
 
 echo "OK   $POOL_ISO"

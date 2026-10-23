@@ -133,9 +133,9 @@ Gateway API.
 -   [x] For a local QEMU network, verify which addresses are reachable
     from the host and LAN before selecting an IP pool.
 -   [x] Deploy a tiny test app and expose it with an HTTP route.
--   [ ] Test DNS, routing, and access from both the host and another LAN
+-   [x] Test DNS, routing, and access from both the host and another LAN
     device if needed.
--   [ ] Document firewall rules and address reservations.
+-   [x] Document firewall rules and address reservations.
 
 **Important:** do not assume an IP pool such as `10.5.0.100-150` is safe
 just because the nodes use `10.5.0.0/24`. Confirm the actual QEMU
@@ -165,10 +165,10 @@ understanding of what happens if a node or VM is lost.
 
 ## Phase 5 --- TLS and secrets
 
--   [ ] Install cert-manager if certificate automation is needed.
--   [ ] Start with a local development CA or another appropriate lab
+-   [x] Install cert-manager if certificate automation is needed.
+-   [x] Start with a local development CA or another appropriate lab
     issuer.
--   [ ] Issue a certificate and verify HTTPS end-to-end through the
+-   [x] Issue a certificate and verify HTTPS end-to-end through the
     chosen Gateway/Ingress.
 -   [ ] Choose a secret-management approach before storing more
     credentials in Git.

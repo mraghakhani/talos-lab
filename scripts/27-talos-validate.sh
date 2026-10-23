@@ -49,7 +49,7 @@ if git -C "$PROJECT_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   for sensitive in \
     infrastructure/talos/generated/secrets.yaml \
     infrastructure/talos/generated/talosconfig \
-    infrastructure/talos/generated/talos-cp-01.yaml; do
+    infrastructure/talos/generated/talos-node-01.yaml; do
     if ! git -C "$PROJECT_ROOT" check-ignore -q "$sensitive"; then
       echo "FAIL sensitive generated path is not gitignored: $sensitive" >&2
       ((failures+=1))

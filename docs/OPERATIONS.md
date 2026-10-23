@@ -24,6 +24,34 @@ lab bridge plus NTP/NTS egress (`UDP/123`, `TCP/4460`) from the lab subnet.
 Empty leases indicate blocked DHCP. Talos stuck in `Booting` with `apid` waiting
 for time sync indicates blocked NTP/NTS. Rerun `task network:up` in either case.
 
+## Network addressing and firewall
+
+Libvirt NAT network `192.168.231.0/24` on `virbr231`. Address plan (all reserved,
+never hand out from DHCP):
+
+| Range / address | Use |
+|---|---|
+| `192.168.231.1` | host gateway + VM-reachable proxy (`10808`) |
+| `192.168.231.10` | Kubernetes API VIP |
+| `192.168.231.11-13` | combined controlplane+worker nodes (talos-node-0[1-3]) |
+| `192.168.231.200-220` | Cilium LB-IPAM pool (Gateway/LoadBalancer IPs) |
+| `192.168.231.100-180` | libvirt DHCP (temporary VM boot only) |
+
+The LB pool sits outside the DHCP range on purpose: Cilium L2-announces pool
+IPs on `virbr231`; a DHCP overlap would cause duplicate-address conflicts.
+
+Firewall (UFW) expectations on the host:
+
+- `task network:up` permits DHCP (UDP 67/68) and NTP/NTS egress (UDP/123,
+  TCP/4460) for the lab subnet while leaving UFW enabled.
+- Inbound to VMs traverses libvirt NAT; no additional inbound rules are needed
+  for the host-only network.
+- Host services the VMs use: proxy `127.0.0.1:10808` (VMs reach it as
+  `192.168.231.1:10808`), Gitea `3000` (HTTP) and `2222` (SSH).
+- `task preflight` checks the critical paths; empty DHCP leases or Talos time
+  sync stalls mean a rule is missing.
+
+
 ## VM lifecycle
 
 Start all VMs using the repository's idempotent start task/script if present.
@@ -36,7 +64,10 @@ task vm:stop:force
 
 This is equivalent to pulling power. It is not the normal shutdown path.
 
-A graceful shutdown task should be added and preferred for routine operations.
+Use `task vm:stop` for routine shutdowns. It requests a clean OS-level shutdown
+through the Talos API (`shutdown --force --wait=false`) and falls back to the
+ACPI power button. Kubernetes cordon/drain is intentionally skipped: it cannot
+complete on a pre-bootstrap node and would leave the guest half-shut-down.
 
 ## Talos
 
@@ -58,6 +89,23 @@ Apply initial config:
 ```bash
 task talos:apply
 ```
+
+On a slow link the first install takes many minutes: each node downloads the
+Talos installer image before it writes anything to disk. Do **not** power off a
+node in this window — an interrupted install leaves a blank disk and must be
+re-applied. Watch progress with:
+
+```bash
+talosctl --talosconfig infrastructure/talos/generated/talosconfig dmesg --nodes <ip>
+```
+
+Day-2 machine-config changes on already-installed nodes use:
+
+```bash
+task talos:config:apply
+```
+
+It applies through the authenticated Talos API (no maintenance mode required).
 
 Post-install direct health:
 

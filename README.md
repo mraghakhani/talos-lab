@@ -15,12 +15,12 @@ The repository is intentionally automation-first:
 
 | Node | Role | IP | vCPU | RAM | OS disk | Data disk |
 |---|---|---:|---:|---:|---:|---:|
-| talos-cp-01 | control plane | 192.168.231.11 | 2 | 2560 MiB | 20 GiB | - |
-| talos-cp-02 | control plane | 192.168.231.12 | 2 | 2560 MiB | 20 GiB | - |
-| talos-cp-03 | control plane | 192.168.231.13 | 2 | 2560 MiB | 20 GiB | - |
-| talos-worker-01 | worker | 192.168.231.21 | 4 | 4608 MiB | 20 GiB | 30 GiB |
-| talos-worker-02 | worker | 192.168.231.22 | 4 | 4608 MiB | 20 GiB | 30 GiB |
-| talos-worker-03 | worker | 192.168.231.23 | 4 | 4608 MiB | 20 GiB | 30 GiB |
+| talos-node-01 | control plane (schedulable) | 192.168.231.11 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+| talos-node-02 | control plane (schedulable) | 192.168.231.12 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+| talos-node-03 | control plane (schedulable) | 192.168.231.13 | 4 | 8192 MiB | 40 GiB | 20 GiB |
+
+Three combined controlplane+worker nodes (ADR-010): Talos control-plane machines
+are schedulable by default. Data disks are reserved for future Rook-Ceph OSDs.
 
 Additional addresses:
 
@@ -57,7 +57,7 @@ Talos and Kubernetes are pinned in `config/versions.yaml`:
 
 ```yaml
 cluster:
-  talos: v1.14.0
+  talos: v1.14.4
   kubernetes: v1.37.0
 ```
 
@@ -155,7 +155,7 @@ task image:download
 
 The verified download cache remains under `state/downloads/` so destructive VM rebuilds do not force another internet download.
 
-### 6. Create all six VMs
+### 6. Create every VM
 
 ```bash
 task vm:create
@@ -267,7 +267,7 @@ task image:status
 task vm:plan
 ```
 
-`task vm:plan` is non-destructive. It prints all six nodes, their IP/MAC/resource allocation, total virtual capacity, API VIP, proxy endpoint, and validates that the libvirt network, pool, and verified Talos ISO exist.
+`task vm:plan` is non-destructive. It prints every node, their IP/MAC/resource allocation, total virtual capacity, API VIP, proxy endpoint, and validates that the libvirt network, pool, and verified Talos ISO exist.
 
 Only after the plan is clean should you run:
 
@@ -277,7 +277,7 @@ task vm:create
 
 ## Talos cluster configuration milestone
 
-After all six libvirt VMs are running from the Talos ISO, the next stage is fully declarative:
+After all libvirt VMs are running from the Talos ISO, the next stage is fully declarative:
 
 ```bash
 task talos:maintenance:check

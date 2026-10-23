@@ -17,7 +17,7 @@ Legend:
 - [x] Dedicated libvirt storage pool
 - [x] Six-node Talos VM topology
 - [x] Stable node MAC/IP mapping
-- [x] Talos `v1.14.0`
+- [x] Talos `v1.14.4`
 - [x] Kubernetes `v1.37.0`
 - [x] Three-control-plane etcd cluster
 - [x] Talos node traffic through host HTTP proxy

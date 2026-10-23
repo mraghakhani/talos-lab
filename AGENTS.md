@@ -33,15 +33,15 @@ Nodes:
 
 | Node | Role | IP |
 |---|---|---|
-| talos-cp-01 | controlplane | 192.168.231.11 |
-| talos-cp-02 | controlplane | 192.168.231.12 |
-| talos-cp-03 | controlplane | 192.168.231.13 |
-| talos-worker-01 | worker | 192.168.231.21 |
-| talos-worker-02 | worker | 192.168.231.22 |
-| talos-worker-03 | worker | 192.168.231.23 |
+| talos-node-01 | controlplane | 192.168.231.11 |
+| talos-node-02 | controlplane | 192.168.231.12 |
+| talos-node-03 | controlplane | 192.168.231.13 |
+
+All three nodes are combined controlplane+worker machines (schedulable,
+no taint) — see ADR-010.
 
 Pinned foundation versions at the current milestone:
-- Talos: `v1.14.0`
+- Talos: `v1.14.4`
 - Kubernetes: `v1.37.0`
 - Cilium: `1.20.1`
 

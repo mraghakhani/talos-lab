@@ -35,3 +35,12 @@ while IFS=$'\t' read -r name data_disk; do
     fi
   done
 done < <(yq -r '.nodes[] | [.name, .data_disk_gib] | @tsv' "$PROJECT_ROOT/config/nodes.yaml")
+
+# Warn about lab VMs that are no longer declared in nodes.yaml so the operator
+# cleans them up deliberately (this script never deletes undeclared domains).
+leftover="$(virsh -c "$LIBVIRT_URI" list --all --name 2>/dev/null | grep -E '^talos-' || true)"
+if [[ -n "$leftover" ]]; then
+  warn "undeclared talos-* domains still exist in libvirt (not deleted by this script):"
+  printf '%s\n' "$leftover"
+  warn "undefine them manually if they are leftovers from an earlier topology"
+fi

@@ -14,17 +14,20 @@ validate_disk() {
   local ip="$1"
   local disk_id="$2"
   local expected_gib="$3"
-  local disk_out actual_id dev_path size_bytes read_only min_bytes
+  local disk_out disk_doc actual_id dev_path size_bytes read_only min_bytes
 
   if ! disk_out="$(talosctl get disk "$disk_id" --insecure --nodes "$ip" -o yaml 2>&1)"; then
     printf '%s' "$disk_id: resource lookup failed: ${disk_out//$'\n'/ }"
     return 1
   fi
 
-  actual_id="$(yq -r '.metadata.id // ""' <<<"$disk_out")"
-  dev_path="$(yq -r '.spec.dev_path // ""' <<<"$disk_out")"
-  size_bytes="$(yq -r '.spec.size // 0' <<<"$disk_out")"
-  read_only="$(yq -r '.spec.readonly' <<<"$disk_out")"
+  # talosctl writes client/server version-mismatch warnings to stderr; strip
+  # them so the captured document stays parseable YAML.
+  disk_doc="$(grep -v '^WARNING: ' <<<"$disk_out" || true)"
+  actual_id="$(yq -r '.metadata.id // ""' <<<"$disk_doc")"
+  dev_path="$(yq -r '.spec.dev_path // ""' <<<"$disk_doc")"
+  size_bytes="$(yq -r '.spec.size // 0' <<<"$disk_doc")"
+  read_only="$(yq -r '.spec.readonly' <<<"$disk_doc")"
   min_bytes=$(( expected_gib * 1024 * 1024 * 1024 ))
 
   if [[ "$actual_id" != "$disk_id" ]]; then

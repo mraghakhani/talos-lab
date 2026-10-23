@@ -3,6 +3,11 @@ apiVersion: v1alpha1
 kind: KubeNodeConfig
 labels:
   ${LAB_DOMAIN}/role: controlplane
+# ADR-010: these combined controlplane+worker nodes must stay schedulable.
+# talosctl gen config registers the control-plane NoSchedule taint by default;
+# drop it so regular workloads (Cilium tests, hubble, GitOps apps) can run.
+taints:
+  $patch: delete
 ---
 # Cilium will provide kube-proxy replacement.
 apiVersion: v1alpha1

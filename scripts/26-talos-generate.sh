@@ -64,6 +64,8 @@ while IFS=$'\t' read -r name role; do
     --output "$outfile" \
     --force
   chmod 600 "$outfile"
+  # clean-install on blank disk requires wipe: true, not the gen-default wipe: false
+  sed -i 's/wipe: false/wipe: true/' "$outfile"
 done < <(yq -r '.nodes[] | [.name, .role] | @tsv' "$NODES_FILE")
 
 log "generating Talos client configuration"
@@ -83,7 +85,7 @@ mapfile -t controlplane_ips < <(yq -r '.nodes[] | select(.role == "controlplane"
 talosctl --talosconfig "$TALOSCONFIG" config endpoint "${controlplane_ips[@]}"
 talosctl --talosconfig "$TALOSCONFIG" config node "${controlplane_ips[0]}"
 
-ok "generated six node-specific configs plus talosconfig using pinned versions"
+ok "generated $(( $(yq -r '.nodes | length' "$NODES_FILE") )) node-specific configs plus talosconfig using pinned versions"
 echo "Generated directory: $GENERATED"
 echo "Kubernetes endpoint: $ENDPOINT"
 echo "Talos endpoints: ${controlplane_ips[*]}"
